@@ -1,5 +1,4 @@
-import
-  std/os
+import std/os
 
 func getUser*(): string =
   result = getEnv("USER")

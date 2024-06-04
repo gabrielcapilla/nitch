@@ -1,0 +1,60 @@
+#!/bin/bash
+
+function install() {
+  readonly installPath="/usr/local/bin/nitch"
+
+  chmod +x "$fileName"
+  sudo mv "$fileName" "$installPath"
+
+  printf "%s\n" "Nitch installed correctly."
+}
+
+function downloadFile() {
+  local url="https://api.github.com/repos/gabrielcapilla/nitch/releases/latest"
+  local downloadUrl
+  downloadUrl=$(curl -s "$url" | jq -r ".assets[] | select(.name == \"$fileName\") | .browser_download_url")
+
+  if [ -n "$downloadUrl" ]; then
+    curl -L -o "$fileName" "$downloadUrl"
+    install
+  else
+    printf "%s\n" "The file '$fileName' could not be found in the provided URL."
+  fi
+}
+
+function getVersion() {
+  read -r -p "Use Nerd Font Symbols? (y/n): " chooseVersion
+  chooseVersion=$(echo "$chooseVersion" | tr '[:upper:]' '[:lower:]')
+
+  case $chooseVersion in
+  "y")
+    readonly fileName="nitchNerd"
+    downloadFile
+    ;;
+  "n")
+    readonly fileName="nitchNoNerd"
+    downloadFile
+    ;;
+  *) exit 0 ;;
+  esac
+}
+
+function main() {
+  local installDir="/usr/local/bin"
+  local file="nitch"
+
+  if [ -f "$installDir/$file" ]; then
+    read -r -p "Upgrade '$file'? (y/n): " upgradeNitch
+  else
+    getVersion
+  fi
+
+  upgradeNitch=$(echo "$upgradeNitch" | tr '[:upper:]' '[:lower:]')
+
+  case $upgradeNitch in
+  "y") getVersion ;;
+  "n" | *) exit 0 ;;
+  esac
+}
+
+main

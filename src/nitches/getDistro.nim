@@ -1,5 +1,8 @@
-import
-  std/parsecfg
+import std/parsecfg
 
 proc getDistro*(): string =
-  result = "/etc/os-release".loadConfig.getSectionValue("", "PRETTY_NAME")
+  let
+    osRelease: Config = loadConfig("/etc/os-release")
+    distroName: string = osRelease.getSectionValue("", "PRETTY_NAME")
+
+  result = distroName

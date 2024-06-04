@@ -1,5 +1,7 @@
-import
-  std/[strutils, osproc]
+import std/osproc
 
 proc getRpmPkgs*(): string =
-  result = osproc.execCmdEx("rpm -qa | wc --lines")[0]
+  let
+    count: string = osproc.execCmdEx("rpm -qa | wc -l")[0]
+
+  result = count[0 .. ^3]
