@@ -54,7 +54,7 @@ After that you will get a ready-made binary file in the root directory of the pr
 
 ## Special thanks to
 
-- [sleet](https://github.com/ssleert/nitch)
+- [sleert](https://github.com/ssleert/nitch)
 
 ## Thanks for ideas & examples
 
