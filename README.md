@@ -4,7 +4,7 @@ Incredibly fast system fetch written in [nim](https://github.com/nim-lang/Nim)
 
 ## Description
 
-![Alt text](.ignore/nitch.png)
+![Alt text](.ignore/20240604052730.png)
 
 `nitch` is a small and incredibly fast system fetch written fully in `nim👑` without any dependencies. Why `nim👑`? Because it's fast and simple.
 
