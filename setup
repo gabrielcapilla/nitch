@@ -41,16 +41,17 @@ function main() {
 
   if [ -f "$installDir/$file" ]; then
     read -r -p "Upgrade '$file'? (y/n): " upgradeNitch
+
+    case $upgradeNitch in
+    "y")
+      readonly fileName="nitch"
+      downloadFile
+      ;;
+    "n" | *) exit 0 ;;
+    esac
   else
     getLastVersion
   fi
-
-  upgradeNitch=$(echo "$upgradeNitch" | tr '[:upper:]' '[:lower:]')
-
-  case $upgradeNitch in
-  "y") getLastVersion ;;
-  "n" | *) exit 0 ;;
-  esac
 }
 
 main
