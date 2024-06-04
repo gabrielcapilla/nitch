@@ -1,33 +1,20 @@
-import
-  std/strutils
+import std/strutils
+
+proc getMemoryInfo(): (int, int) =
+  let
+    fileSeq = readLines("/proc/meminfo", 3)
+    memTotalSeq = fileSeq[0].split(" ")
+    memAvailableSeq = fileSeq[2].split(" ")
+
+  let
+    memTotalInt = parseInt(memTotalSeq[^2]) div 1024
+    memAvailableInt = parseInt(memAvailableSeq[^2]) div 1024
+
+  return (memTotalInt, memAvailableInt)
 
 proc getRam*(): string =
   let
-    fileSeq: seq[string] = "/proc/meminfo".readLines(3)
-  
-  let
-    memTotalString = fileSeq[0].split(" ")[^2]
-    memAvailableString = fileSeq[2].split(" ")[^2]
-  
-    memTotalInt = memTotalString.parseUInt div 1024
-    memAvailableInt = memAvailableString.parseUInt div 1024
-  
-    memUsedInt = memTotalInt - memAvailableInt
-  
-  result = $(memUsedInt) & " | " & $(memTotalInt) & " MiB"
-  
-  
-proc getRam_MB*(): string =
-  let
-    fileSeq: seq[string] = "/proc/meminfo".readLines(3)
-  
-  let
-    memTotalString = fileSeq[0].split(" ")[^2]
-    memAvailableString = fileSeq[2].split(" ")[^2]
-
-    memTotalInt = memTotalString.parseUInt div 1000
-    memAvailableInt = memAvailableString.parseUInt div 1000
-
+    (memTotalInt, memAvailableInt) = getMemoryInfo()
     memUsedInt = memTotalInt - memAvailableInt
 
-  result = $(memUsedInt) & " | " & $(memTotalInt) & " MB"
+  result = $memUsedInt & " | " & $memTotalInt & " MiB"

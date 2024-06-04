@@ -1,20 +1,14 @@
-import
-  std/strutils
+import std/strutils
 
 proc getUptime*(): string =
   let
-    uptimeString = "/proc/uptime".open.readLine.split(".")[0]
-    uptimeUint = uptimeString.parseUInt
+    uptimeSeq: seq[string] = readFile("/proc/uptime").split(".")
+    uptimeHours: int = parseInt(uptimeSeq[0]) div 3600
+    uptimeMinutes: int = parseInt(uptimeSeq[0]) mod 3600 div 60
 
-    uptimeHours = uptimeUint div 3600 mod 24
-    uptimeMinutes = uptimeUint mod 3600 div 60
-    uptimeDays = uptimeUint div 3600 div 24 
 
-  if uptimeDays == 0:
-    result = $(uptimeHours) & "h " & $(uptimeMinutes) & "m"
-  
-  elif uptimeHours == 0 and uptimeDays == 0:
-    result = $(uptimeMinutes) & "m"
+  if uptimeHours != 0:
+      result = $(uptimeHours) & "h " & $(uptimeMinutes) & "m"
 
   else:
-    result = $(uptimeDays) & "d " & $(uptimeHours) & "h " & $(uptimeMinutes) & "m"
+      result = $(uptimeMinutes) & "m"

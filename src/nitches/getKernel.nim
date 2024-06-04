@@ -1,5 +1,8 @@
-import
-  std/strutils
+import std/strutils
 
 proc getKernel*(): string =
-  result = "/proc/version".open.readLine.split(" ")[2]
+  let
+    version: string = readAll(open("/proc/version"))
+    kernelVersion: seq[string] = version.split(" ")
+
+  result = kernelVersion[2]

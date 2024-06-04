@@ -1,5 +1,8 @@
-import
-  std/[strutils, os]
+import std/[strutils, os]
 
 func getShell*(): string =
-  result = getEnv("SHELL").split("/")[^1]
+  let
+    shellPath = getEnv("SHELL")
+    shellSeq = shellPath.split("/")
+
+  shellSeq[^1]
