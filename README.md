@@ -1,6 +1,6 @@
 # Nitch
 
-Incredibly fast system fetch written in nim
+Incredibly fast system fetch written in [nim](https://github.com/nim-lang/Nim)
 
 ## Description
 
@@ -8,13 +8,13 @@ Incredibly fast system fetch written in nim
 
 `nitch` is a small and incredibly fast system fetch written fully in `nim👑` without any dependencies. Why `nim👑`? Because it's fast and simple.
 
-## Installation ☁️
+## Installation
 
 ```sh
 wget https://raw.githubusercontent.com/gabrielcapilla/nitch/main/setup && sh setup
 ```
 
-## Usage 🪨
+## Usage
 
 ```sh
 nitch
@@ -28,7 +28,7 @@ flags:
  -v --version | return version of program
 ```
 
-## Building 📦
+## Build
 
 ### 0) Install [nim](https://nim-lang.org/)
 
@@ -56,7 +56,7 @@ After that you will get a ready-made binary file in the root directory of the pr
 
 - [sleet](https://github.com/ssleert/nitch)
 
-## Thanks for ideas & examples 💬
+## Thanks for ideas & examples
 
 - [pfetch](https://github.com/dylanaraps/pfetch/)
 - [neofetch](https://github.com/dylanaraps/neofetch)
