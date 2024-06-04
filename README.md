@@ -35,7 +35,7 @@ flags:
 ### 1) Clone the repository
 
 ```sh
-git clone https://github.com/unxsh/nitch.git
+git clone https://github.com/gabrielcapilla/nitch.git
 ```
 
 ### 2) Change dir to `nitch`
@@ -55,11 +55,3 @@ After that you will get a ready-made binary file in the root directory of the pr
 ## Special thanks to
 
 - [sleert](https://github.com/ssleert/nitch)
-
-## Thanks for ideas & examples
-
-- [pfetch](https://github.com/dylanaraps/pfetch/)
-- [neofetch](https://github.com/dylanaraps/neofetch)
-- [paleofetch](https://github.com/ss7m/paleofetch)
-- [rxfetch](https://github.com/Mangeshrex/rxfetch)
-- [nerdfetch](https://github.com/ThatOneCalculator/NerdFetch)
