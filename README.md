@@ -50,6 +50,12 @@ cd nitch
 nimble build
 ```
 
+Use `-d:release` to generate faster code
+
+```sh
+nimble -d:release build
+```
+
 After that you will get a ready-made binary file in the root directory of the project.
 
 ## Special thanks to
