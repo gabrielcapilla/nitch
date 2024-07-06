@@ -22,11 +22,11 @@ function downloadFile() {
   fi
 }
 
-function getLastVersion() {
-  read -r -p "Install Nitch? (y/n): " chooseVersion
-  chooseVersion=$(echo "$chooseVersion" | tr '[:upper:]' '[:lower:]')
+function installNitch() {
+  read -r -p "Install Nitch? (y/n): " choice
+  choice=$(echo "$choice" | tr '[:upper:]' '[:lower:]')
 
-  case $chooseVersion in
+  case $choice in
   "y")
     readonly fileName="nitch"
     downloadFile
@@ -50,7 +50,7 @@ function main() {
     "n" | *) exit 0 ;;
     esac
   else
-    getLastVersion
+    installNitch
   fi
 }
 
