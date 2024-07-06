@@ -17,15 +17,15 @@ proc drawInfo*() =
     defaultLogo: string  = getLogo(distroId)             # default logo from nitch/src/assets/logos
 
   const  # icons before cotegores
-    userIcon: string   = " "  # recomended: " " or "|>"
-    hnameIcon: string  = " "  # recomended: " " or "|>"
-    distroIcon: string = " "  # recomended: " " or "|>"
-    kernelIcon: string = " "  # recomended: " " or "|>"
-    uptimeIcon: string = " "  # recomended: " " or "|>"
-    shellIcon: string  = " "  # recomended: " " or "|>"
-    pkgsIcon: string   = " "  # recomended: " " or "|>"
-    ramIcon: string    = " "  # recomended: " " or "|>"
-    colorsIcon: string = " "  # recomended: " " or "->"
+    userIcon: string   = "󰀄 "  # recomended: " " or "|>"
+    hnameIcon: string  = "󰁥 "  # recomended: " " or "|>"
+    distroIcon: string = "󰌽 "  # recomended: " " or "|>"
+    kernelIcon: string = "󰌢 "  # recomended: " " or "|>"
+    uptimeIcon: string = "󰅐 "  # recomended: " " or "|>"
+    shellIcon: string  = "󰆍 "  # recomended: " " or "|>"
+    pkgsIcon: string   = "󰏖 "  # recomended: " " or "|>"
+    ramIcon: string    = "󰍛 "  # recomended: " " or "|>"
+    colorsIcon: string = "󱥚 "  # recomended: " " or "->"
     # please insert any char after the icon
     # to avoid the bug with cropping the edge of the icon
 
@@ -36,7 +36,7 @@ proc drawInfo*() =
     userCat: string   = " user   │ "  # recomended: " user   │ "
     hnameCat: string  = " hname  │ "  # recomended: " hname  │ "
     distroCat: string = " distro │ "  # recomended: " distro │ "
-    kernelCat: string = " kernel │ "  # recomended: " kernel │ "-
+    kernelCat: string = " kernel │ "  # recomended: " kernel │ "
     uptimeCat: string = " uptime │ "  # recomended: " uptime │ "
     shellCat: string  = " shell  │ "  # recomended: " shell  │ "
     pkgsCat: string   = " pkgs   │ "  # recomended: " pkgs   │ "
