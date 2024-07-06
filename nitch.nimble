@@ -1,13 +1,12 @@
 # Package
 
-version       = "0.1.7"
+version       = "0.1.8"
 author        = "gabrielcapilla"
 description   = "System fetch in nim lang"
 license       = "MIT"
 
 srcDir        = "src"
 bin           = @["nitch"]
-
 
 # Dependencies
 
