@@ -1,14 +1,14 @@
 import ./drawing
 import ../assets/assets
 
-# if if no flag
 proc arg0*() =
-  drawInfo()
+  drawInfo(showLogo = true)
 
-# if -h --help flags
+proc arg3*() =
+  drawInfo(showLogo = false)
+
 proc arg1*() =
-  stdout.write(helpMsg)  # write to stdout helpMsg from nitch/assets/assets file
+  stdout.write(helpMsg)
 
-# if -v --version flags
 proc arg2*() =
-  stdout.write(programVersion)  # write to stdout programVersion from nitch/assets/assets file
+  stdout.write(programVersion)
