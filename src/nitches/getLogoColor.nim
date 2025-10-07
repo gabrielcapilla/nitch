@@ -1,11 +1,21 @@
-import std/terminal
+import std/[tables, terminal]
+
+const colorTable: Table[string, terminal.ForegroundColor] = {
+  "pop": fgCyan,
+  "centos": fgYellow,
+  "gentoo": fgMagenta,
+  "ubuntu": fgRed,
+  "debian": fgRed,
+  "redhat": fgRed,
+  "arch": fgBlue,
+  "fedora": fgBlue,
+  "Zorin OS": fgBlue,
+  "slackware": fgBlue,
+  "linuxmint": fgGreen,
+  "manjaro": fgGreen,
+  "opensuse": fgGreen,
+  "cachyos": fgGreen,
+}.toTable
 
 func getLogoColor*(distroId: string): ForegroundColor =
-  case distroId:
-  of "pop": fgCyan
-  of "centos": fgYellow
-  of "gentoo": fgMagenta
-  of "ubuntu", "debian", "redhat": fgRed
-  of "arch", "fedora", "Zorin OS", "slackware": fgBlue
-  of "linuxmint", "manjaro", "opensuse", "cachyos": fgGreen
-  else: fgRed
+  result = colorTable.getOrDefault(distroId, fgRed)
