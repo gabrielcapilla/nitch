@@ -1,8 +1,9 @@
-import
-  std/[strutils, osproc]
+import std/[osproc, strutils]
 
 proc getPortagePkgs*(): string =
-  let
-    count: string = osproc.execCmdEx("ls -d /var/db/pkg/*/*| cut -f5- -d/")[0]
-
-  result = $(count.split("\n").len - 1)
+  try:
+    let count: string = osproc.execCmdEx("ls -d /var/db/pkg/*/*| cut -f5- -d/")[0]
+    let lineCount: int = count.split("\n").len - 1
+    result = $lineCount
+  except OSError, IOError:
+    result = "0"
