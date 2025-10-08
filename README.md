@@ -1,9 +1,10 @@
 # Nitch
 
-Incredibly fast system fetch written in [Nim](https://github.com/nim-lang/Nim). Nitch is a small and incredibly fast system fetch tool written fully in Nim without any dependencies.
+A lightning-fast system fetch utility written in [Nim](https://github.com/nim-lang/Nim) that displays your system information alongside a customizable logo in the terminal. Similar to neofetch alternative but optimized for performance  without any dependencies.
 
 <div align="center">
-  <img src="preview.webp" alt="nitch preview" width="500"/>
+  <img src="preview.webp" alt="Example output of Nitch system fetch tool" width="500"/>
+  <br>
 </div>
 
 ## Features
