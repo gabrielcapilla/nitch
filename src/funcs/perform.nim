@@ -1,14 +1,14 @@
 import ./drawing
 import ../assets/assets
 
-proc arg0*() =
+proc showFetch*() =
   drawInfo(showLogo = true)
 
-proc arg3*() =
-  drawInfo(showLogo = false)
-
-proc arg1*() =
+proc showHelp*() =
   stdout.write(helpMsg)
 
-proc arg2*() =
+proc showVersion*() =
   stdout.write(programVersion)
+
+proc showFetchNoLogo*() =
+  drawInfo(showLogo = false)

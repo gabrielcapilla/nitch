@@ -43,13 +43,13 @@ proc main() =
 
   case argType
   of ArgNormal:
-    arg0()
+    showFetch()
   of ArgNoLogo:
-    arg3()
+    showFetchNoLogo()
   of ArgHelp:
-    arg1()
+    showHelp()
   of ArgVersion:
-    arg2()
+    showVersion()
 
 when isMainModule:
   main()
