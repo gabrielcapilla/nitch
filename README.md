@@ -1,5 +1,9 @@
 # Nitch
 
+<div align="center">
+  <img src="preview.webp" alt="nitch preview" width="600"/>
+</div>
+
 Incredibly fast system fetch written in [Nim](https://github.com/nim-lang/Nim). Nitch is a small and incredibly fast system fetch tool written fully in Nim without any dependencies.
 
 ## Features
