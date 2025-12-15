@@ -1,6 +1,6 @@
 # Nitch
 
-A lightning-fast system fetch utility written in [Nim](https://github.com/nim-lang/Nim) that displays your system information alongside a customizable logo in the terminal. Similar to neofetch alternative but optimized for performance  without any dependencies.
+A lightning-fast system fetch utility written in [Nim](https://github.com/nim-lang/Nim) that displays your system information alongside a customizable logo in the terminal. Optimized for performance without any dependencies.
 
 <div align="center">
   <img src="preview.webp" alt="Example output of Nitch system fetch tool" width="500"/>
@@ -17,7 +17,11 @@ A lightning-fast system fetch utility written in [Nim](https://github.com/nim-la
 
 ## Installation
 
-### Using nimble (recommended)
+### Prerequisites
+
+- [Nim](https://nim-lang.org/) (version 2.2.6 or higher)
+
+### Using Nimble
 
 This will automatically compile and install the binary.
 
@@ -30,7 +34,18 @@ nimble install https://github.com/gabrielcapilla/nitch.git
 ```sh
 git clone https://github.com/gabrielcapilla/nitch.git
 cd nitch
-nimble install
+```
+
+Build with hard speed optimizations.
+
+```sh
+nimble release
+```
+
+Install the binary in your local installation directory
+
+```sh
+mv nitch $HOME/.local/bin
 ```
 
 ## Usage
@@ -48,19 +63,11 @@ nitch
  -v --version | return version of program
 ```
 
-## Build
-
-### Prerequisites
-
-- [Nim](https://nim-lang.org/) (version 2.2.4 or higher)
-
-### Build commands
+## Build commands
 
 | Command            | Description                                           |
-|:-------------------|:------------------------------------------------------|
-| `nimble build`     | Build with standard optimizations                     |
-| `nimble opt`       | Build with speed optimizations                        |
-| `nimble ult`       | Build with hard speed optimizations (recommended)     |
+| :----------------- | :---------------------------------------------------- |
+| `nimble release    | Build with hard speed optimizations (recommended)     |
 | `nimble benchmark` | Run performance benchmark and keep the fastest binary |
 
 ## Performance Benchmark
@@ -72,7 +79,8 @@ nimble benchmark
 ```
 
 This will:
-1. Compile all 4 variants (normal, release, opt, ult)
+
+1. Compile all 3 variants (debug, standard, optimized)
 2. Run performance tests on each
 3. Identify the fastest variant
 4. Automatically remove slower variants
@@ -81,34 +89,33 @@ This will:
 ### Benchmark results preview
 
 ```sh
-Running benchmarks (50 iterations each)...
+Running benchmark
 
-Version      | Total Time  | Average     | Min         | Max
--------------|-------------|-------------|-------------|-----------
-normal       |   0.001620s |     32.39μs |     24.18μs |     69.15μs
-release      |   0.001521s |     30.42μs |     25.00μs |     41.33μs
-opt          |   0.001507s |     30.15μs |     23.74μs |     43.27μs
-ult          |   0.001392s |     27.83μs |     24.66μs |     39.82μs
+Variant               | Total Time  | Average     | Min         | Max
+----------------------|-------------|-------------|-------------|-----------
+Debug                 |   0.392411s |   7848.22μs |   7642.60μs |   8293.32μs
+Standard (-d:release) |   0.101966s |   2039.31μs |   1942.88μs |   2226.64μs
+Optimized (Custom)    |   0.095052s |   1901.04μs |   1842.65μs |   2010.93μs
 
-Fastest version: ult (average: 27.83μs)
-Slowest version: normal (average: 32.39μs)
-Improvement from normal to ult: 116.39% faster
+Fastest variant: optimized (avg: 1901.04μs)
+Slowest variant: debug (avg: 7848.22μs)
+Improvement: 412.84% faster
 
 Binary sizes:
-normal     :  445216 bytes
-release    :  259320 bytes
-opt        :  202336 bytes
-ult        :  164096 bytes
+debug     :  373712 bytes
+standard  :  207728 bytes
+optimized :  105032 bytes
 
 System optimization...
-Removing slower versions...
-  - Removed: nitch_normal
-  - Removed: nitch_release
-  - Removed: nitch_opt
-  - Kept: nitch (from nitch_ult)
+Cleaning up...
+  - Removed: nitch_debug
+  - Removed: nitch_standard
+  - Kept: nitch (renamed from nitch_optimized)
+
+Done! The 'nitch' binary is now the fastest version.
 ```
 
-# Acknowledgments
+## Repository & Support
 
-- [Nim](https://github.com/nim-lang/Nim) for the amazing programming language
-- [sleert](https://github.com/ssleert/nitch) without you this fork would not exist
+- **GitHub:** [gabrielcapilla/parun](https://github.com/gabrielcapilla/parun)
+- **Nostr:** [@gabrielcapilla](https://nostree.me/npub1uf2dtc8wfpd7g4papst44uy0yzlnud54tzglhffrr3yvh6hnjefq4uy52e)
