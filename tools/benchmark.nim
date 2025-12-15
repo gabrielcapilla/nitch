@@ -1,4 +1,4 @@
-import std/[os, osproc, times, strformat]
+import std/[os, osproc, times, strformat, monotimes]
 
 type BenchmarkResult = object
   totalTime: float
@@ -12,10 +12,10 @@ proc timeExecution*(exe: string, iterations: int): BenchmarkResult =
   times.setLen(iterations)
 
   for i in 0 ..< iterations:
-    let startTime: float = cpuTime()
+    let startTime = getMonoTime()
     discard execCmd(exe & " > /dev/null 2>&1")
-    let endTime: float = cpuTime()
-    times[i] = endTime - startTime
+    let endTime = getMonoTime()
+    times[i] = float((endTime - startTime).inNanoseconds) / 1_000_000_000.0
 
   result.totalTime = 0.0
   result.minTime = float.high
@@ -32,77 +32,56 @@ proc timeExecution*(exe: string, iterations: int): BenchmarkResult =
   result.iterations = iterations
 
 proc printResult(name: string, result: BenchmarkResult) =
-  stdout.write &"{name:<12} | {result.totalTime:>10.6f}s | {result.avgTime*1000000:>9.2f}μs | {result.minTime*1000000:>9.2f}μs | {result.maxTime*1000000:>9.2f}μs\n"
+  stdout.write &"{name:<20} | {result.totalTime:>10.6f}s | {result.avgTime*1000000:>9.2f}μs | {result.minTime*1000000:>9.2f}μs | {result.maxTime*1000000:>9.2f}μs\n"
 
 proc main() =
-  stdout.write "Performance benchmark for different nitch compilation versions\n"
-  stdout.write "=============================================================\n\n"
+  for f in ["nitch", "nitch_debug", "nitch_standard", "nitch_optimized"]:
+    try:
+      removeFile(f)
+    except OSError:
+      discard
 
-  stdout.write "Cleaning previous files...\n"
-  try:
-    removeFile("nitch")
-  except OSError:
-    discard
-
-  stdout.write "Compiling versions...\n"
-
+  stdout.write "[1/3] Compiling Debug version (nimble build)...\n"
   if execCmd("nimble build > /dev/null 2>&1") != 0:
-    quit("Error compiling normal version")
-  moveFile("nitch", "nitch_normal")
+    quit("Error compiling debug version")
+  moveFile("nitch", "nitch_debug")
 
-  try:
-    removeFile("nitch")
-  except OSError:
-    discard
+  stdout.write "[2/3] Compiling Standard version (nimble build -d:release)...\n"
   if execCmd("nimble build -d:release > /dev/null 2>&1") != 0:
-    quit("Error compiling release version")
-  moveFile("nitch", "nitch_release")
+    quit("Error compiling standard release version")
+  moveFile("nitch", "nitch_standard")
 
-  try:
-    removeFile("nitch")
-  except OSError:
-    discard
-  if execCmd("nimble opt > /dev/null 2>&1") != 0:
-    quit("Error compiling opt version")
-  moveFile("nitch", "nitch_opt")
+  stdout.write "[3/3] Compiling Optimized version (nimble release)...\n"
+  if execCmd("nimble release > /dev/null 2>&1") != 0:
+    quit("Error compiling optimized release version")
+  moveFile("nitch", "nitch_optimized")
 
-  try:
-    removeFile("nitch")
-  except OSError:
-    discard
-  if execCmd("nimble ult > /dev/null 2>&1") != 0:
-    quit("Error compiling ult version")
-  moveFile("nitch", "nitch_ult")
-
-  stdout.write "Running benchmarks (50 iterations each)...\n\n"
+  stdout.write "\nRunning benchmark\n\n"
 
   const iterations: int = 50
   let
-    normalResult: BenchmarkResult = timeExecution("./nitch_normal", iterations)
-    releaseResult: BenchmarkResult = timeExecution("./nitch_release", iterations)
-    optResult: BenchmarkResult = timeExecution("./nitch_opt", iterations)
-    ultResult: BenchmarkResult = timeExecution("./nitch_ult", iterations)
+    resDebug = timeExecution("./nitch_debug", iterations)
+    resStandard = timeExecution("./nitch_standard", iterations)
+    resOptimized = timeExecution("./nitch_optimized", iterations)
 
-  stdout.write "Version      | Total Time  | Average     | Min         | Max       \n"
-  stdout.write "-------------|-------------|-------------|-------------|-----------\n"
+  stdout.write "Variant              | Total Time  | Average     | Min         | Max       \n"
+  stdout.write "---------------------|-------------|-------------|-------------|-----------\n"
 
-  printResult("normal", normalResult)
-  printResult("release", releaseResult)
-  printResult("opt", optResult)
-  printResult("ult", ultResult)
+  printResult("Debug", resDebug)
+  printResult("Standard (-d:release)", resStandard)
+  printResult("Optimized (Custom)", resOptimized)
 
   stdout.write "\n"
 
-  var results: array[0 .. 3, (string, float)] = [
-    ("normal", normalResult.avgTime),
-    ("release", releaseResult.avgTime),
-    ("opt", optResult.avgTime),
-    ("ult", ultResult.avgTime),
+  var results: array[0 .. 2, (string, float)] = [
+    ("debug", resDebug.avgTime),
+    ("standard", resStandard.avgTime),
+    ("optimized", resOptimized.avgTime),
   ]
 
   var
-    fastest: (string, float) = results[0]
-    slowest: (string, float) = results[0]
+    fastest = results[0]
+    slowest = results[0]
 
   for r in results:
     if r[1] < fastest[1]:
@@ -110,36 +89,35 @@ proc main() =
     if r[1] > slowest[1]:
       slowest = r
 
-  stdout.write &"Fastest version: {fastest[0]} (average: {fastest[1]*1000000:.2f}μs)\n"
-  stdout.write &"Slowest version: {slowest[0]} (average: {slowest[1]*1000000:.2f}μs)\n"
-  stdout.write &"Improvement from {slowest[0]} to {fastest[0]}: {(slowest[1]/fastest[1])*100.0:.2f}% faster\n"
+  stdout.write &"Fastest variant: {fastest[0]} (avg: {fastest[1]*1000000:.2f}μs)\n"
+  stdout.write &"Slowest variant: {slowest[0]} (avg: {slowest[1]*1000000:.2f}μs)\n"
+  stdout.write &"Improvement: {(slowest[1]/fastest[1])*100.0:.2f}% faster\n"
 
   stdout.write "\nBinary sizes:\n"
-  let sizes: array[0 .. 3, (string, BiggestInt)] = [
-    ("normal", getFileSize("nitch_normal")),
-    ("release", getFileSize("nitch_release")),
-    ("opt", getFileSize("nitch_opt")),
-    ("ult", getFileSize("nitch_ult")),
+  let sizes: array[0 .. 2, (string, BiggestInt)] = [
+    ("debug", getFileSize("nitch_debug")),
+    ("standard", getFileSize("nitch_standard")),
+    ("optimized", getFileSize("nitch_optimized")),
   ]
   for (name, size) in sizes:
-    stdout.write &"{name:<11}: {size:>7} bytes\n"
+    stdout.write &"{name:<10}: {size:>7} bytes\n"
 
   stdout.write "\nSystem optimization...\n"
-  stdout.write "Removing slower versions...\n"
+  stdout.write "Cleaning up...\n"
 
   for (name, _) in sizes:
+    let filename = &"nitch_{name}"
     if name != fastest[0]:
-      let filename: string = &"nitch_{name}"
       try:
         removeFile(filename)
         stdout.write &"  - Removed: {filename}\n"
       except OSError:
-        stdout.write &"  - Could not remove {filename} (possibly already removed)\n"
+        stdout.write &"  - Error removing {filename}\n"
+    else:
+      moveFile(filename, "nitch")
+      stdout.write &"  - Kept: nitch (renamed from {filename})\n"
 
-  let finalName: string = &"nitch_{fastest[0]}"
-  moveFile(finalName, "nitch")
-  stdout.write &"  - Kept: nitch (from {finalName})\n"
-  stdout.write "\nOptimization completed! The system now contains only the fastest version.\n"
+  stdout.write "\nDone! The 'nitch' binary is now the fastest version.\n"
 
 when isMainModule:
   main()
