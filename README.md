@@ -67,7 +67,7 @@ nitch
 
 | Command            | Description                                           |
 | :----------------- | :---------------------------------------------------- |
-| `nimble release    | Build with hard speed optimizations (recommended)     |
+| `nimble release`   | Build with hard speed optimizations (recommended)     |
 | `nimble benchmark` | Run performance benchmark and keep the fastest binary |
 
 ## Performance Benchmark
