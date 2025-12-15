@@ -1,12 +1,19 @@
-import std/[os, sequtils]
+import std/os
 
 proc getPacmanPkgs*(): string =
-  let packagesDir: string = "/var/lib/pacman/local"
+  const packagesDir = "/var/lib/pacman/local"
+  if not dirExists(packagesDir):
+    return "0"
+
+  var count = 0
   try:
-    if dirExists(packagesDir):
-      let filesInPath: seq[tuple] = toSeq(walkDir(packagesDir, relative = true))
-      result = $(filesInPath.len - 1)
-    else:
-      result = "0"
-  except OSError, IOError:
-    result = "0"
+    for kind, _ in walkDir(packagesDir, relative = true):
+      if kind == pcDir:
+        inc count
+
+    if count > 0:
+      dec count
+  except CatchableError:
+    return "0"
+
+  return $count

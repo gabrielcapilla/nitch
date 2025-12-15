@@ -1,55 +1,32 @@
-import std/parseopt
+import std/os
 import funcs/perform
 
-type ArgType = enum
-  ArgNormal
-  ArgNoLogo
-  ArgHelp
-  ArgVersion
-
-proc parseCommandLineArgs(): ArgType =
-  var parser: OptParser = initOptParser()
-  result = ArgNormal
-
-  const optionMap: array[8, tuple[key: string, value: ArgType]] = [
-    ("f", ArgNormal),
-    ("fetch", ArgNormal),
-    ("n", ArgNoLogo),
-    ("nologo", ArgNoLogo),
-    ("h", ArgHelp),
-    ("help", ArgHelp),
-    ("v", ArgVersion),
-    ("version", ArgVersion),
-  ]
-
-  try:
-    while true:
-      parser.next()
-      case parser.kind
-      of cmdEnd:
-        break
-      of cmdShortOption, cmdLongOption:
-        for opt in optionMap:
-          if parser.key == opt.key:
-            return opt.value
-        return ArgNormal
-      of cmdArgument:
-        return ArgNormal
-  except CatchableError:
-    return ArgNormal
-
 proc main() =
-  let argType: ArgType = parseCommandLineArgs()
+  let count = paramCount()
 
-  case argType
-  of ArgNormal:
+  if count == 0:
     showFetch()
-  of ArgNoLogo:
-    showFetchNoLogo()
-  of ArgHelp:
-    showHelp()
-  of ArgVersion:
-    showVersion()
+    return
+
+  for i in 1 .. count:
+    let arg = paramStr(i)
+    case arg
+    of "-n", "--nologo":
+      showFetchNoLogo()
+      return
+    of "-h", "--help":
+      showHelp()
+      return
+    of "-v", "--version":
+      showVersion()
+      return
+    of "-f", "--fetch":
+      showFetch()
+      return
+    else:
+      discard
+
+  showFetch()
 
 when isMainModule:
   main()

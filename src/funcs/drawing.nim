@@ -5,97 +5,119 @@ import
     getLogo, getLogoColor, getDistroId,
   ]
 
+const
+  Reset = "\e[0m"
+  Bold = "\e[1m"
+
+func colorCode(c: ForegroundColor): string =
+  case c
+  of fgRed: "\e[31m"
+  of fgGreen: "\e[32m"
+  of fgYellow: "\e[33m"
+  of fgBlue: "\e[34m"
+  of fgMagenta: "\e[35m"
+  of fgCyan: "\e[36m"
+  of fgWhite: "\e[37m"
+  of fgBlack: "\e[30m"
+  else: "\e[39m"
+
 proc drawInfo*(showLogo: bool = true) =
   let distroId: string = getDistroId()
+  let mainColor: string = colorCode(getLogoColor(distroId))
+  let rawLogo: string =
+    if showLogo:
+      getLogo(distroId)
+    else:
+      ""
 
   let
-    logoColor: ForegroundColor = getLogoColor(distroId)
-    defaultLogo: string =
-      if showLogo:
-        getLogo(distroId)
-      else:
-        ""
+    userInfo = getUser()
+    hostnameInfo = getHostname()
+    distroInfo = getDistro()
+    kernelInfo = getKernel()
+    uptimeInfo = getUptime()
+    shellInfo = getShell()
+    pkgsInfo = getPkgs(distroId)
+    ramInfo = getRam()
+
+  let
+    c1 = "\e[31m" # Red
+    c2 = "\e[33m" # Yellow
+    c3 = "\e[32m" # Green
+    c4 = "\e[36m" # Cyan
+    c5 = "\e[34m" # Blue
+    c6 = "\e[35m" # Magenta
+    c7 = "\e[37m" # White
+    c8 = "\e[30m" # Black/Grey
 
   const
-    userIcon: string = "󰀄 "
-    hnameIcon: string = "󰁥 "
-    distroIcon: string = "󰌽 "
-    kernelIcon: string = "󰌢 "
-    uptimeIcon: string = "󰅐 "
-    shellIcon: string = "󰆍 "
-    pkgsIcon: string = "󰏖 "
-    ramIcon: string = "󰍛 "
-    colorsIcon: string = "󱥚 "
-    dotIcon: string = ""
+    iUser = "󰀄 "
+    iHname = "󰁥 "
+    iDistro = "󰌽 "
+    iKernel = "󰌢 "
+    iUptime = "󰅐 "
+    iShell = "󰆍 "
+    iPkgs = "󰏖 "
+    iRam = "󰍛 "
+    iColors = "󱥚 "
+    dot = ""
 
-    userCat: string = " user   │ "
-    hnameCat: string = " hname  │ "
-    distroCat: string = " distro │ "
-    kernelCat: string = " kernel │ "
-    uptimeCat: string = " uptime │ "
-    shellCat: string = " shell  │ "
-    pkgsCat: string = " pkgs   │ "
-    ramCat: string = " memory │ "
-    colorsCat: string = " colors │ "
+    lUser = " user   │ "
+    lHname = " hname  │ "
+    lDistro = " distro │ "
+    lKernel = " kernel │ "
+    lUptime = " uptime │ "
+    lShell = " shell  │ "
+    lPkgs = " pkgs   │ "
+    lRam = " memory │ "
+    lColors = " colors │ "
 
-    color1: ForegroundColor = fgRed
-    color2: ForegroundColor = fgYellow
-    color3: ForegroundColor = fgGreen
-    color4: ForegroundColor = fgCyan
-    color5: ForegroundColor = fgBlue
-    color6: ForegroundColor = fgMagenta
-    color7: ForegroundColor = fgWhite
-    color8: ForegroundColor = fgBlack
-    color0: ForegroundColor = fgDefault
-
-  let
-    userInfo: string = getUser()
-    hostnameInfo: string = getHostname()
-    distroInfo: string = getDistro()
-    kernelInfo: string = getKernel()
-    uptimeInfo: string = getUptime()
-    shellInfo: string = getShell()
-    pkgsInfo: string = getPkgs(distroId)
-    ramInfo: string = getRam()
+  var buf = newStringOfCap(2048)
 
   if showLogo:
-    stdout.styledWrite(styleBright, logoColor, defaultLogo)
-    stdout.styledWrite(styleBright, "  ╭───────────╮\n")
+    buf.add(Bold & mainColor & rawLogo & Reset)
+    # Borde superior
+    buf.add(Reset & Bold & "  ╭───────────╮\n")
   else:
-    stdout.styledWrite(styleBright, "  ╭───────────╮\n")
+    buf.add(Reset & Bold & "  ╭───────────╮\n")
 
-  stdout.styledWrite(
-    styleBright, "  │ ", color1, userIcon, color0, userCat, color1, userInfo, "\n"
+  buf.add(
+    Reset & Bold & "  │ " & c1 & iUser & Reset & Bold & lUser & c1 & userInfo & "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color2, hnameIcon, color0, hnameCat, color2, hostnameInfo,
-    "\n",
+  buf.add(
+    Reset & Bold & "  │ " & c2 & iHname & Reset & Bold & lHname & c2 & hostnameInfo &
+      "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color3, distroIcon, color0, distroCat, color3, distroInfo,
-    "\n",
+  buf.add(
+    Reset & Bold & "  │ " & c3 & iDistro & Reset & Bold & lDistro & c3 & distroInfo &
+      "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color4, kernelIcon, color0, kernelCat, color4, kernelInfo,
-    "\n",
+  buf.add(
+    Reset & Bold & "  │ " & c4 & iKernel & Reset & Bold & lKernel & c4 & kernelInfo &
+      "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color5, uptimeIcon, color0, uptimeCat, color5, uptimeInfo,
-    "\n",
+  buf.add(
+    Reset & Bold & "  │ " & c5 & iUptime & Reset & Bold & lUptime & c5 & uptimeInfo &
+      "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color6, shellIcon, color0, shellCat, color6, shellInfo, "\n"
+  buf.add(
+    Reset & Bold & "  │ " & c6 & iShell & Reset & Bold & lShell & c6 & shellInfo & "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color1, pkgsIcon, color0, pkgsCat, color1, pkgsInfo, "\n"
+  buf.add(
+    Reset & Bold & "  │ " & c1 & iPkgs & Reset & Bold & lPkgs & c1 & pkgsInfo & "\n"
   )
-  stdout.styledWrite(
-    styleBright, "  │ ", color2, ramIcon, color0, ramCat, fgYellow, ramInfo, "\n"
+  buf.add(
+    Reset & Bold & "  │ " & c2 & iRam & Reset & Bold & lRam & c2 & ramInfo & "\n"
   )
-  stdout.styledWrite(styleBright, "  ├───────────┤\n")
-  stdout.styledWrite(
-    styleBright, "  │ ", color7, colorsIcon, color0, colorsCat, color7, dotIcon, " ",
-    color1, dotIcon, " ", color2, dotIcon, " ", color3, dotIcon, " ", color4, dotIcon,
-    " ", color5, dotIcon, " ", color6, dotIcon, " ", color8, dotIcon, "\n",
+
+  buf.add(Reset & Bold & "  ├───────────┤\n")
+
+  buf.add(Reset & Bold & "  │ " & c7 & iColors & Reset & Bold & lColors)
+  buf.add(
+    c7 & dot & " " & c1 & dot & " " & c2 & dot & " " & c3 & dot & " " & c4 & dot & " " &
+      c5 & dot & " " & c6 & dot & " " & c8 & dot & "\n"
   )
-  stdout.styledWrite(styleBright, "  ╰───────────╯\n\n")
+
+  buf.add(Reset & Bold & "  ╰───────────╯\n\n" & Reset)
+
+  stdout.write(buf)

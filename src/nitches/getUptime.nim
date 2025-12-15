@@ -1,22 +1,29 @@
-import std/[os, strutils]
+import std/[os, parseutils]
 
 proc getUptime*(): string =
-  if fileExists("/proc/uptime"):
+  const path = "/proc/uptime"
+  if fileExists(path):
     try:
-      let uptimeSeq: seq[string] = readFile("/proc/uptime").split(".")
-      if uptimeSeq.len > 0:
-        let
-          uptimeSeconds: int = parseInt(uptimeSeq[0])
-          uptimeHours: int = uptimeSeconds div 3600
-          uptimeMinutes: int = uptimeSeconds mod 3600 div 60
+      var buffer = newString(64)
+      let f = open(path)
+      let len = f.readBuffer(addr buffer[0], 64)
+      f.close()
 
-        if uptimeHours != 0:
-          result = $(uptimeHours) & "h " & $(uptimeMinutes) & "m"
-        else:
-          result = $(uptimeMinutes) & "m"
-      else:
-        result = "0m"
-    except ValueError, IOError, OSError:
-      result = "0m"
-  else:
-    result = "0m"
+      buffer.setLen(len)
+
+      if len > 0:
+        var uptimeFloat: float
+        if parseFloat(buffer, uptimeFloat) > 0:
+          let
+            uptimeSeconds = int(uptimeFloat)
+            uptimeHours = uptimeSeconds div 3600
+            uptimeMinutes = (uptimeSeconds mod 3600) div 60
+
+          if uptimeHours != 0:
+            return $uptimeHours & "h " & $uptimeMinutes & "m"
+          else:
+            return $uptimeMinutes & "m"
+    except CatchableError:
+      discard
+
+  return "0m"

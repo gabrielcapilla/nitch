@@ -11,6 +11,7 @@
 # Nim artifacts
 nimcache/
 nimcache-*/
+nimbledeps
 config.nims
 nimble.paths
 *.nimble_link
