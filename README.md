@@ -117,5 +117,5 @@ Done! The 'nitch' binary is now the fastest version.
 
 ## Repository & Support
 
-- **GitHub:** [gabrielcapilla/parun](https://github.com/gabrielcapilla/parun)
+- **GitHub:** [gabrielcapilla/nitch](https://github.com/gabrielcapilla/nitch.git)
 - **Nostr:** [@gabrielcapilla](https://nostree.me/npub1uf2dtc8wfpd7g4papst44uy0yzlnud54tzglhffrr3yvh6hnjefq4uy52e)
